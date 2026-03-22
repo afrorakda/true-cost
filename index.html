@@ -9,94 +9,100 @@
     <link rel="icon" href="image_16.png">
     <link rel="apple-touch-icon" href="image_16.png">
     <style>
-        body { font-family: -apple-system, sans-serif; background-color: #fff; margin: 0; display: flex; justify-content: center; color: #111; -webkit-font-smoothing: antialiased; }
-        .container { width: 100%; max-width: 400px; padding: 40px 20px; box-sizing: border-box; text-align: center; }
-        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; letter-spacing: -1px; }
-        .subtitle { font-size: 0.95rem; color: #666; margin: 10px 0 30px; line-height: 1.4; font-weight: 500; }
+        body { font-family: -apple-system, sans-serif; background-color: #fff; margin: 0; display: flex; justify-content: center; color: #111; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .container { width: 100%; max-width: 400px; padding: 25px 20px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
         
-        /* Input Area: Both empty by default */
-        .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        h1 { font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: -1px; }
+        .subtitle { font-size: 0.9rem; color: #666; margin: 5px 0 20px; font-weight: 500; }
+        
+        /* 1画面に収めるための間隔調整 */
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
         input { 
-            width: 100%; padding: 20px; font-size: 1.2rem; border: 1px solid #eee; 
+            width: 100%; padding: 18px; font-size: 1.1rem; border: 1px solid #eee; 
             border-radius: 15px; box-sizing: border-box; outline: none; 
             text-align: center; background: #fafafa; -webkit-appearance: none;
         }
 
-        /* Deal Buttons Grid: Fridge Combo Rounded 15px */
-        .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
+        .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .deal-btn { 
-            padding: 18px; background: #fff; border: 1px solid #eee; border-radius: 15px; 
-            font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; color: #444;
+            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15 box-sizing: border-box;
+            border-radius: 15px; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #444;
         }
         .deal-btn.active { background: #111; color: #fff; border-color: #111; }
 
-        /* Result Area */
+        /* 結果エリアの「締まり」を改善 */
         .result-box { 
-            background: #fafafa; border-radius: 15px; padding: 30px; margin-bottom: 30px;
-            min-height: 100px; display: flex; flex-direction: column; justify-content: center;
+            background: #fafafa; border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            display: flex; flex-direction: column; justify-content: center;
         }
-        .res-label { font-size: 0.75rem; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
-        .res-value { font-size: 2.2rem; font-weight: 800; color: #111; }
-        .res-save { font-size: 0.95rem; color: #e63946; font-weight: 700; margin-top: 8px; min-height: 1.2rem; }
+        .res-label { font-size: 0.7rem; color: #999; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .res-value { font-size: 2.2rem; font-weight: 800; color: #111; line-height: 1; }
+        .res-save { font-size: 0.85rem; color: #e63946; font-weight: 700; margin-top: 5px; height: 1rem; }
 
         .clear-btn { 
-            width: 100%; padding: 18px; background-color: #fff; color: #bbb; 
-            border: 1px solid #f0f0f0; border-radius: 15px; font-size: 0.9rem; font-weight: 600; 
-            cursor: pointer; margin-bottom: 50px;
+            width: 100%; padding: 15px; background-color: #fff; color: #bbb; 
+            border: 1px solid #f0f0f0; border-radius: 15px; font-size: 0.85rem; font-weight: 600; 
+            cursor: pointer; margin-bottom: 20px;
         }
 
-        /* Footer Buttons */
-        .btn-group { display: flex; flex-direction: column; align-items: center; gap: 15px; border-top: 1px solid #f0f0f0; padding-top: 40px; }
-        .kofi-btn { background: #111; color: #fff; padding: 14px 28px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .install-btn { background: #f0f0f0; color: #666; padding: 12px 24px; border-radius: 15px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; }
+        /* Footer & Buttons */
+        .btn-group { display: flex; flex-direction: column; align-items: center; gap: 10px; border-top: 1px solid #f0f0f0; padding-top: 20px; }
+        .kofi-btn { background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .install-btn { background: #f0f0f0; color: #666; padding: 10px 20px; border-radius: 15px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; }
         
-        footer { margin-top: 30px; font-size: 11px; color: #aaa; line-height: 1.8; }
+        footer { font-size: 10px; color: #aaa; line-height: 1.4; padding-bottom: 10px; }
 
-        /* Modal: Smart Text Cleaner Style (4th image) */
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal-title { font-weight: 800; font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .modal-subtitle { color: #666; font-size: 0.9rem; margin-bottom: 25px; }
-        .guide-box { background: #f9f9f9; padding: 20px; border-radius: 15px; font-size: 14px; line-height: 1.6; text-align: left; }
-        .close-x { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; color: #ccc; font-weight: 300; }
+        /* Modal: Centering Fix */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { 
+            background: #fff; padding: 30px; border-radius: 20px; 
+            width: 85%; max-width: 320px; text-align: center; position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            margin: auto; /* Ensure horizontal centering */
+        }
+        .modal-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .modal-subtitle { color: #666; font-size: 0.85rem; margin-bottom: 20px; }
+        .guide-box { background: #f9f9f9; padding: 18px; border-radius: 15px; font-size: 13px; line-height: 1.5; text-align: left; }
+        .close-x { position: absolute; top: 12px; right: 18px; font-size: 22px; cursor: pointer; color: #ccc; font-weight: 300; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>True Cost</h1>
-    <p class="subtitle">Unmask the real price per unit.</p>
-    
-    <div class="input-group">
-        <input type="number" id="price" placeholder="Price" oninput="calc()" inputmode="decimal">
-        <input type="number" id="qty" placeholder="Qty" oninput="calc()" inputmode="numeric">
-    </div>
+    <div>
+        <h1>True Cost</h1>
+        <p class="subtitle">Unmask the real price per unit.</p>
+        
+        <div class="input-group">
+            <input type="number" id="price" placeholder="Price" oninput="calc()" inputmode="decimal">
+            <input type="number" id="qty" placeholder="Qty" oninput="calc()" inputmode="numeric">
+        </div>
 
-    <div class="deal-grid">
-        <button class="deal-btn active" id="btn-normal" onclick="setDeal(0, this)">Normal</button>
-        <button class="deal-btn" onclick="setDeal(20, this)">20% OFF</button>
-        <button class="deal-btn" onclick="setDeal('BOGO', this)">Buy 1 Get 1</button>
-        <button class="deal-btn" onclick="setDeal('B2G1', this)">Buy 2 Get 1</button>
-    </div>
+        <div class="deal-grid">
+            <button class="deal-btn active" id="btn-normal" onclick="setDeal(0, this)">Normal</button>
+            <button class="deal-btn" onclick="setDeal(20, this)">20% OFF</button>
+            <button class="deal-btn" onclick="setDeal('BOGO', this)">Buy 1 Get 1</button>
+            <button class="deal-btn" onclick="setDeal('B2G1', this)">Buy 2 Get 1</button>
+        </div>
 
-    <div class="result-box">
-        <div class="res-label">True Price Per Unit</div>
-        <div class="res-value" id="finalPrice">0.00</div>
-        <div class="res-save" id="saveAmount"></div>
-    </div>
+        <div class="result-box">
+            <div class="res-label">True Price Per Unit</div>
+            <div class="res-value" id="finalPrice">0.00</div>
+            <div class="res-save" id="saveAmount"></div>
+        </div>
 
-    <button class="clear-btn" onclick="resetAll()">Clear All</button>
+        <button class="clear-btn" onclick="resetAll()">Clear All</button>
+    </div>
 
     <div class="btn-group">
         <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕ Support me on Ko-fi</a>
         <button class="install-btn" onclick="showModal()">Add to Home Screen</button>
+        <footer>
+            No login / No tracking / No ads / Browser only<br>
+            Privacy Policy<br>
+            <strong>True Cost © 2026</strong>
+        </footer>
     </div>
-
-    <footer>
-        No login / No tracking / No ads / Browser only<br>
-        Privacy Policy<br>
-        <strong>True Cost © 2026</strong>
-    </footer>
 </div>
 
 <div id="modal">
@@ -134,18 +140,16 @@
                 finalPricePerUnit = (p * 0.8) / q;
                 showSave = true;
             } else if (currentDeal === 'BOGO') {
-                // Buy 1 Get 1 (Price of 1 for 2 units)
                 finalPricePerUnit = p / (q * 2);
                 showSave = true;
             } else if (currentDeal === 'B2G1') {
-                // Buy 2 Get 1 (Price of 2 for 3 units)
                 finalPricePerUnit = (p * 2) / (q * 3);
                 showSave = true;
             }
         }
 
         document.getElementById('finalPrice').innerText = finalPricePerUnit.toFixed(2);
-        document.getElementById('saveAmount').innerText = showSave && p > 0 ? "You save something!" : "";
+        document.getElementById('saveAmount').innerText = (showSave && p > 0 && q > 0) ? "You save something!" : "";
     }
 
     function resetAll() {
@@ -157,7 +161,8 @@
     function showModal() { document.getElementById('modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     window.onclick = function(event) {
-        if (event.target == document.getElementById('modal')) closeModal();
+        const modal = document.getElementById('modal');
+        if (event.target == modal) closeModal();
     }
 </script>
 
