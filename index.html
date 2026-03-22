@@ -23,14 +23,35 @@
         }
 
         .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .deal-btn, .deal-input { 
-            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15px; 
-            box-sizing: border-box; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #444;
-            outline: none; -webkit-appearance: none; text-align: center;
+        
+        /* Base button & input styles */
+        .deal-btn, .discount-wrapper { 
+            background: #fff; border: 1px solid #eee; border-radius: 15px; 
+            box-sizing: border-box; cursor: pointer; transition: 0.2s;
+            position: relative; overflow: hidden; height: 55px; /* Unified height */
         }
-        .deal-btn.active { background: #111; color: #fff; border-color: #111; }
-        .deal-input:focus { border-color: #111; background: #fff; }
+        .deal-btn { font-size: 0.9rem; font-weight: 700; color: #444; padding: 0; border: 1px solid #eee; }
 
+        /* Input specific wrapper */
+        .discount-wrapper { display: flex; align-items: center; justify-content: center; padding: 0 10px; }
+        .deal-input { 
+            width: 35px; /* Small width for number only */
+            border: none; outline: none; background: transparent;
+            font-size: 0.9rem; font-weight: 700; color: #444;
+            text-align: right; padding: 0; -webkit-appearance: none; margin: 0;
+        }
+        .discount-unit { font-size: 0.9rem; font-weight: 700; color: #444; margin-left: 2px; }
+
+        /* Active/Focus State (Invert colors like image_5.png) */
+        .deal-btn.active, 
+        .discount-wrapper.active { background: #111; border-color: #111; }
+        
+        .deal-btn.active { color: #fff; }
+        
+        .discount-wrapper.active .deal-input,
+        .discount-wrapper.active .discount-unit { color: #fff; }
+
+        /* Results */
         .result-box { 
             background: #fafafa; border-radius: 15px; padding: 15px; margin-bottom: 15px;
             display: flex; flex-direction: column; justify-content: center;
@@ -45,6 +66,7 @@
             cursor: pointer; margin-bottom: 20px;
         }
 
+        /* Footer */
         .btn-group { display: flex; flex-direction: column; align-items: center; gap: 10px; border-top: 1px solid #f0f0f0; padding-top: 20px; }
         .kofi-btn { background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 13px; }
         .install-btn { background: #f0f0f0; color: #666; padding: 10px 20px; border-radius: 15px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; }
@@ -68,10 +90,15 @@
         </div>
 
         <div class="deal-grid">
-            <button class="deal-btn active" id="btn-normal" onclick="setDeal('normal', this)">Normal</button>
-            <input type="number" id="discountInput" class="deal-input" placeholder="20% OFF" oninput="handleDiscountInput(this)" onclick="setDeal('discount', this)" inputmode="numeric">
-            <button class="deal-btn" onclick="setDeal('BOGO', this)">Buy 1 Get 1</button>
-            <button class="deal-btn" onclick="setDeal('B2G1', this)">Buy 2 Get 1</button>
+            <button class="deal-btn active" id="btn-normal" onclick="setMode('normal', this)">Normal</button>
+            
+            <div id="discountWrapper" class="discount-wrapper" onclick="focusDiscount()">
+                <input type="number" id="discountInput" class="deal-input" placeholder="20" oninput="handleDiscountInput(this)" inputmode="numeric">
+                <span class="discount-unit">% OFF</span>
+            </div>
+            
+            <button class="deal-btn" onclick="setMode('BOGO', this)">Buy 1 Get 1</button>
+            <button class="deal-btn" onclick="setMode('B2G1', this)">Buy 2 Get 1</button>
         </div>
 
         <div class="result-box">
@@ -105,16 +132,34 @@
 
 <script>
     let mode = 'normal';
+    const discountWrapper = document.getElementById('discountWrapper');
+    const discountInput = document.getElementById('discountInput');
 
-    function setDeal(newMode, element) {
+    function setMode(newMode, element) {
         mode = newMode;
-        document.querySelectorAll('.deal-btn, .deal-input').forEach(b => b.classList.remove('active'));
-        element.classList.add('active');
+        // Reset all active states
+        document.querySelectorAll('.deal-btn, .discount-wrapper').forEach(b => b.classList.remove('active'));
+        
+        // Add active state to clicked element (or wrapper)
+        if (newMode === 'discount') {
+            discountWrapper.classList.add('active');
+        } else {
+            element.classList.add('active');
+        }
         calc();
     }
 
+    function focusDiscount() {
+        discountInput.focus();
+        setMode('discount');
+    }
+
     function handleDiscountInput(input) {
-        setDeal('discount', input);
+        // If typing, ensure we are in discount mode
+        if (mode !== 'discount') {
+            setMode('discount');
+        }
+        calc();
     }
 
     function calc() {
@@ -127,8 +172,8 @@
             if (mode === 'normal') {
                 res = p / q;
             } else if (mode === 'discount') {
-                let d = parseFloat(document.getElementById('discountInput').value);
-                if (isNaN(d)) d = 20; // Default 20%
+                let d = parseFloat(discountInput.value);
+                if (isNaN(d)) d = 20; // Default placeholder value
                 res = (p * (1 - d/100)) / q;
                 showSave = true;
             } else if (mode === 'BOGO') {
@@ -147,8 +192,8 @@
     function resetAll() {
         document.getElementById('price').value = "";
         document.getElementById('qty').value = "";
-        document.getElementById('discountInput').value = "";
-        setDeal('normal', document.getElementById('btn-normal'));
+        discountInput.value = "";
+        setMode('normal', document.getElementById('btn-normal'));
     }
 
     function showModal() { document.getElementById('modal').style.display = 'flex'; }
