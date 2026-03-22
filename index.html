@@ -15,7 +15,6 @@
         h1 { font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: -1px; }
         .subtitle { font-size: 0.9rem; color: #666; margin: 5px 0 20px; font-weight: 500; }
         
-        /* 1画面に収めるための間隔調整 */
         .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
         input { 
             width: 100%; padding: 18px; font-size: 1.1rem; border: 1px solid #eee; 
@@ -24,13 +23,14 @@
         }
 
         .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .deal-btn { 
-            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15 box-sizing: border-box;
-            border-radius: 15px; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #444;
+        .deal-btn, .deal-input { 
+            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15px; 
+            box-sizing: border-box; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #444;
+            outline: none; -webkit-appearance: none; text-align: center;
         }
         .deal-btn.active { background: #111; color: #fff; border-color: #111; }
+        .deal-input:focus { border-color: #111; background: #fff; }
 
-        /* 結果エリアの「締まり」を改善 */
         .result-box { 
             background: #fafafa; border-radius: 15px; padding: 15px; margin-bottom: 15px;
             display: flex; flex-direction: column; justify-content: center;
@@ -45,25 +45,14 @@
             cursor: pointer; margin-bottom: 20px;
         }
 
-        /* Footer & Buttons */
         .btn-group { display: flex; flex-direction: column; align-items: center; gap: 10px; border-top: 1px solid #f0f0f0; padding-top: 20px; }
-        .kofi-btn { background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .kofi-btn { background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 13px; }
         .install-btn { background: #f0f0f0; color: #666; padding: 10px 20px; border-radius: 15px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; }
-        
         footer { font-size: 10px; color: #aaa; line-height: 1.4; padding-bottom: 10px; }
 
-        /* Modal: Centering Fix */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { 
-            background: #fff; padding: 30px; border-radius: 20px; 
-            width: 85%; max-width: 320px; text-align: center; position: relative; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            margin: auto; /* Ensure horizontal centering */
-        }
-        .modal-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .modal-subtitle { color: #666; font-size: 0.85rem; margin-bottom: 20px; }
-        .guide-box { background: #f9f9f9; padding: 18px; border-radius: 15px; font-size: 13px; line-height: 1.5; text-align: left; }
-        .close-x { position: absolute; top: 12px; right: 18px; font-size: 22px; cursor: pointer; color: #ccc; font-weight: 300; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; position: relative; margin: auto; }
+        .close-x { position: absolute; top: 12px; right: 18px; font-size: 22px; cursor: pointer; color: #ccc; }
     </style>
 </head>
 <body>
@@ -79,8 +68,8 @@
         </div>
 
         <div class="deal-grid">
-            <button class="deal-btn active" id="btn-normal" onclick="setDeal(0, this)">Normal</button>
-            <button class="deal-btn" onclick="setDeal(20, this)">20% OFF</button>
+            <button class="deal-btn active" id="btn-normal" onclick="setDeal('normal', this)">Normal</button>
+            <input type="number" id="discountInput" class="deal-input" placeholder="20% OFF" oninput="handleDiscountInput(this)" onclick="setDeal('discount', this)" inputmode="numeric">
             <button class="deal-btn" onclick="setDeal('BOGO', this)">Buy 1 Get 1</button>
             <button class="deal-btn" onclick="setDeal('B2G1', this)">Buy 2 Get 1</button>
         </div>
@@ -108,62 +97,62 @@
 <div id="modal">
     <div class="modal-content">
         <span class="close-x" onclick="closeModal()">&times;</span>
-        <div class="modal-title">📱 Install</div>
-        <div class="modal-subtitle">Add to your home screen.</div>
-        <div class="guide-box">
-            <p><strong>🍏 iPhone (Safari):</strong><br>Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
-            <p style="margin-top: 15px;"><strong>🤖 Android (Chrome):</strong><br>Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.</p>
-        </div>
+        <strong>📱 Install</strong><br><br>
+        <p><strong>🍏 iPhone (Safari):</strong><br>Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
+        <p><strong>🤖 Android (Chrome):</strong><br>Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.</p>
     </div>
 </div>
 
 <script>
-    let currentDeal = 0;
+    let mode = 'normal';
 
-    function setDeal(deal, btn) {
-        currentDeal = deal;
-        document.querySelectorAll('.deal-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    function setDeal(newMode, element) {
+        mode = newMode;
+        document.querySelectorAll('.deal-btn, .deal-input').forEach(b => b.classList.remove('active'));
+        element.classList.add('active');
         calc();
+    }
+
+    function handleDiscountInput(input) {
+        setDeal('discount', input);
     }
 
     function calc() {
         let p = parseFloat(document.getElementById('price').value) || 0;
         let q = parseFloat(document.getElementById('qty').value) || 0;
-        let finalPricePerUnit = 0;
+        let res = 0;
         let showSave = false;
 
         if (p > 0 && q > 0) {
-            if (currentDeal === 0) {
-                finalPricePerUnit = p / q;
-            } else if (currentDeal === 20) {
-                finalPricePerUnit = (p * 0.8) / q;
+            if (mode === 'normal') {
+                res = p / q;
+            } else if (mode === 'discount') {
+                let d = parseFloat(document.getElementById('discountInput').value);
+                if (isNaN(d)) d = 20; // Default 20%
+                res = (p * (1 - d/100)) / q;
                 showSave = true;
-            } else if (currentDeal === 'BOGO') {
-                finalPricePerUnit = p / (q * 2);
+            } else if (mode === 'BOGO') {
+                res = p / (q * 2);
                 showSave = true;
-            } else if (currentDeal === 'B2G1') {
-                finalPricePerUnit = (p * 2) / (q * 3);
+            } else if (mode === 'B2G1') {
+                res = (p * 2) / (q * 3);
                 showSave = true;
             }
         }
 
-        document.getElementById('finalPrice').innerText = finalPricePerUnit.toFixed(2);
+        document.getElementById('finalPrice').innerText = res.toFixed(2);
         document.getElementById('saveAmount').innerText = (showSave && p > 0 && q > 0) ? "You save something!" : "";
     }
 
     function resetAll() {
         document.getElementById('price').value = "";
         document.getElementById('qty').value = "";
-        setDeal(0, document.getElementById('btn-normal'));
+        document.getElementById('discountInput').value = "";
+        setDeal('normal', document.getElementById('btn-normal'));
     }
 
     function showModal() { document.getElementById('modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
-    window.onclick = function(event) {
-        const modal = document.getElementById('modal');
-        if (event.target == modal) closeModal();
-    }
 </script>
 
 </body>
