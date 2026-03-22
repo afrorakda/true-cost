@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>True Cost</title>
+    <link rel="icon" href="image_16.png">
+    <link rel="apple-touch-icon" href="image_16.png">
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: #fff; margin: 0; display: flex; justify-content: center; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 400px; padding: 30px 20px; box-sizing: border-box; text-align: center; }
+        h1 { font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: -1px; }
+        .subtitle { font-size: 0.95rem; color: #666; margin: 10px 0 25px; line-height: 1.4; font-weight: 500; }
+        
+        /* Input Area */
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { 
+            width: 100%; padding: 18px; font-size: 1.1rem; border: 1px solid #eee; 
+            border-radius: 15px; box-sizing: border-box; outline: none; 
+            text-align: center; background: #fafafa; -webkit-appearance: none;
+        }
+
+        /* Deal Buttons Grid */
+        .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
+        .deal-btn { 
+            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15px; 
+            font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; color: #444;
+        }
+        .deal-btn.active { background: #111; color: #fff; border-color: #111; }
+
+        /* Result Area */
+        .result-box { 
+            background: #fafafa; border-radius: 15px; padding: 25px; margin-bottom: 25px;
+            min-height: 80px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .res-label { font-size: 0.8rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .res-value { font-size: 1.8rem; font-weight: 800; color: #111; }
+        .res-save { font-size: 0.9rem; color: #e63946; font-weight: 600; margin-top: 5px; }
+
+        .clear-btn { 
+            width: 100%; padding: 18px; background-color: #fff; color: #aaa; 
+            border: 1px solid #f0f0f0; border-radius: 15px; font-size: 0.9rem; font-weight: 600; 
+            cursor: pointer; margin-bottom: 40px;
+        }
+
+        .btn-group { display: flex; flex-direction: column; align-items: center; gap: 15px; border-top: 1px solid #f0f0f0; padding-top: 40px; }
+        .kofi-btn { background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .install-btn { background: #f0f0f0; color: #444; padding: 10px 20px; border-radius: 15px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
+        
+        footer { margin-top: 30px; font-size: 11px; color: #bbb; line-height: 1.6; }
+
+        /* Modal */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 20px; width: 85%; max-width: 320px; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>True Cost</h1>
+    <p class="subtitle">Unmask the real price per unit.</p>
+    
+    <div class="input-group">
+        <input type="number" id="price" placeholder="Price" oninput="calc()">
+        <input type="number" id="qty" placeholder="Qty" oninput="calc()" value="1">
+    </div>
+
+    <div class="deal-grid">
+        <button class="deal-btn" onclick="setDeal(0, this)">Normal</button>
+        <button class="deal-btn" onclick="setDeal(20, this)">20% OFF</button>
+        <button class="deal-btn" onclick="setDeal('BOGO', this)">Buy 1 Get 1</button>
+        <button class="deal-btn" onclick="setDeal('B2G1', this)">Buy 2 Get 1</button>
+    </div>
+
+    <div class="result-box">
+        <div class="res-label">True Price Per Unit</div>
+        <div class="res-value" id="finalPrice">$0.00</div>
+        <div class="res-save" id="saveAmount"></div>
+    </div>
+
+    <button class="clear-btn" onclick="resetAll()">Clear All</button>
+
+    <div class="btn-group">
+        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕ Support me on Ko-fi</a>
+        <button class="install-btn" onclick="showModal()">Add to Home Screen</button>
+    </div>
+
+    <footer>
+        No login / No tracking / No ads / Browser only<br>
+        Privacy Policy<br>
+        <strong>True Cost © 2026</strong>
+    </footer>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <p><strong>🍏 iPhone:</strong> Share > Add to Home Screen</p>
+        <p><strong>🤖 Android:</strong> Menu > Add to Home screen</p>
+        <button onclick="closeModal()" style="width:100%; padding:10px; margin-top:10px; border-radius:10px; border:none; background:#111; color:#fff;">Close</button>
+    </div>
+</div>
+
+<script>
+    let currentDeal = 0;
+
+    function setDeal(deal, btn) {
+        currentDeal = deal;
+        document.querySelectorAll('.deal-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        calc();
+    }
+
+    function calc() {
+        let p = parseFloat(document.getElementById('price').value) || 0;
+        let q = parseFloat(document.getElementById('qty').value) || 1;
+        let finalP = p;
+        let totalQty = q;
+        let saved = 0;
+
+        if (currentDeal === 20) {
+            finalP = p * 0.8;
+            saved = p * 0.2;
+        } else if (currentDeal === 'BOGO') {
+            totalQty = q * 2;
+            saved = p;
+        } else if (currentDeal === 'B2G1') {
+            totalQty = q + (Math.floor(q/2));
+            saved = Math.floor(q/2) * (p/q);
+        }
+
+        const perUnit = (p * (currentDeal === 20 ? 0.8 : 1)) / totalQty;
+        document.getElementById('finalPrice').innerText = perUnit.toFixed(2);
+        
+        const saveEl = document.getElementById('saveAmount');
+        if (currentDeal !== 0) {
+            saveEl.innerText = `You save something!`;
+        } else {
+            saveEl.innerText = "";
+        }
+    }
+
+    function resetAll() {
+        document.getElementById('price').value = "";
+        document.getElementById('qty').value = "1";
+        setDeal(0, document.querySelector('.deal-btn'));
+    }
+
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+</script>
+
+</body>
+</html>
