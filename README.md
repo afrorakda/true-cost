@@ -1,11 +1,15 @@
 # True Cost
-Unmask the real price. Stop being fooled by "Buy 1 Get 1" or complex discounts. 
+Calculate the real price including taxes or discounts. No math, just clarity.
 
-### 🛠 Fridge Combo Standard
-* **Smart Calculation**: Instantly see the price per unit.
-* **Deal Breaker**: Compare "Buy X Get Y" deals and percentage discounts in one tap.
-* **Minimalist UI**: White background, black buttons, 15px rounded corners.
-* **Privacy First**: No login, No tracking, No ads. Browser only.
+## Philosophy
+* **1 Tool, 1 Action.**
+* **No Login / No Ads / No Tracking**
+* **Browser-only Privacy**
+
+## How to Use
+1. Enter the tag price and percentage.
+2. See the final "True Cost" immediately.
 
 ---
-*Developed by afrorakda © 2026*
+No login / No tracking / No ads / Browser only Privacy Policy  
+**afrorakda © 2026**
