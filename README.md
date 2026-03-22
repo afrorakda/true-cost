@@ -7,7 +7,7 @@ Calculate the real price including taxes or discounts. No math, just clarity.
 * **Browser-only Privacy**
 
 ## How to Use
-1. Enter the tag price and percentage.
+1. Enter the tag price and quantity.
 2. See the final "True Cost" immediately.
 
 ---
