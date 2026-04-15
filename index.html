@@ -53,7 +53,6 @@
         }
         .hub-link:active { transform: scale(0.95); background: var(--accent); color: var(--main); }
 
-        /* Input Area: Visibility enhanced */
         .input-group { display: flex; gap: 10px; margin-bottom: 12px; }
         input { 
             width: 100%; padding: 14px 12px; border: 2px solid var(--accent); border-radius: var(--radius); 
@@ -63,9 +62,8 @@
             user-select: auto !important; -webkit-user-select: auto !important; 
         }
         input:focus { border-color: var(--main); background: #fff; }
-        input::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; font-weight: 600; font-size: 18px; }
+        input::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; font-weight: 600; font-size: 15px; }
 
-        /* Mode Grid: Active state refined */
         .deal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
         .deal-btn, .discount-wrapper { 
             background: var(--bg); border: 2px solid var(--accent); border-radius: var(--radius); 
@@ -77,7 +75,6 @@
             transform: scale(1.02); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Discount Input: Editability line added */
         .discount-wrapper input {
             width: 45px; border: none; background: transparent; padding: 0;
             font-size: 20px; font-weight: 900; text-align: right; color: inherit;
@@ -87,7 +84,6 @@
         .discount-wrapper.active input { border-bottom-color: rgba(255,255,255,0.5); }
         .discount-unit { font-size: 0.8rem; font-weight: 800; }
 
-        /* Result Box: Units added */
         .result-box { 
             background: var(--input-bg); border: 2px solid var(--accent); border-radius: var(--radius); 
             padding: 18px; text-align: center; margin-bottom: 12px; transition: 0.3s;
@@ -104,7 +100,6 @@
         }
         .btn-clear-all:active { color: var(--main); transform: scale(0.97); }
 
-        /* Footer: Outline style */
         footer { margin-top: auto; padding: 20px 0 30px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 11px; color: #666; font-weight: 600; }
         .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         
@@ -138,7 +133,7 @@
         
         <div class="input-group">
             <input type="number" id="price" placeholder="Price" oninput="calc()" inputmode="decimal">
-            <input type="number" id="qty" placeholder="Qty" oninput="calc()" inputmode="numeric">
+            <input type="number" id="qty" placeholder="Qty / Pack size" oninput="calc()" inputmode="numeric">
         </div>
 
         <div class="deal-grid">
@@ -232,7 +227,15 @@
             }
         }
 
-        document.getElementById('finalPrice').innerText = res.toFixed(2);
+        // 割り切れない場合に桁を伸ばす（最大4桁、それ以外は2桁）
+        const resStr = res.toString();
+        const decimalPart = resStr.split('.')[1] || "";
+        if (decimalPart.length > 2) {
+            document.getElementById('finalPrice').innerText = res.toFixed(4);
+        } else {
+            document.getElementById('finalPrice').innerText = res.toFixed(2);
+        }
+        
         document.getElementById('saveAmount').innerText = (p > 0 && q > 0) ? showSave : "";
     }
 
